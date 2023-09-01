@@ -158,7 +158,7 @@ export default function App() {
       .delete(`${articlesUrl}/${article_id}`)
       .then((response) => {
         console.log(response.data);
-        setArticles(response.data.articles);
+        getArticles();
         setMessage(response.data.message);
       })
       .catch((error) => {
