@@ -103,15 +103,74 @@ export default function App() {
     // The flow is very similar to the `getArticles` function.
     // You'll know what to do! Use log statements or breakpoints
     // to inspect the response from the server.
+    setMessage("");
+    setSpinnerOn(true);
+    axiosAuth()
+      .post(articlesUrl, article)
+      .then((response) => {
+        console.log(response.data);
+        getArticles();
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          redirectToLogin();
+        } else {
+          setMessage(error.response.data.message);
+        }
+      })
+      .finally(() => {
+        setSpinnerOn(false);
+      });
   };
 
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
+    setMessage("");
+    setSpinnerOn(true);
+    console.log(article_id, article);
+    axiosAuth()
+      .put(`${articlesUrl}/${article_id}`, article)
+      .then((response) => {
+        console.log(response.data);
+        getArticles();
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          redirectToLogin();
+        } else {
+          setMessage(error.response.data.message);
+        }
+      })
+      .finally(() => {
+        setSpinnerOn(false);
+      });
   };
 
   const deleteArticle = (article_id) => {
     // ✨ implement
+
+    setMessage("");
+    setSpinnerOn(true);
+    axiosAuth()
+      .delete(`${articlesUrl}/${article_id}`)
+      .then((response) => {
+        console.log(response.data);
+        setArticles(response.data.articles);
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          redirectToLogin();
+        } else {
+          setMessage(error.response.data.message);
+        }
+      })
+      .finally(() => {
+        setSpinnerOn(false);
+      });
   };
 
   return (
@@ -141,8 +200,10 @@ export default function App() {
             element={
               <>
                 <ArticleForm
+                  articles={articles}
                   postArticle={postArticle}
                   updateArticle={updateArticle}
+                  currentArticleId={currentArticleId}
                   setCurrentArticleId={setCurrentArticleId}
                 />
                 <Articles
