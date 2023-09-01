@@ -18,13 +18,25 @@ export default function LoginForm(props) {
   const onSubmit = (evt) => {
     evt.preventDefault();
     // ✨ implement
+    isDisabled("disable");
+    login(values);
+    setValues(initialFormValues);
   };
 
-  const isDisabled = () => {
+  const isDisabled = (cmd) => {
     // ✨ implement
     // Trimmed username must be >= 3, and
     // trimmed password must be >= 8 for
     // the button to become enabled
+    if (
+      (values.username.trim().length >= 3 &&
+        values.password.trim().length >= 8) ||
+      cmd === "disable"
+    ) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (
