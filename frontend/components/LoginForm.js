@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
 import PT from "prop-types";
 
 const initialFormValues = {
@@ -9,6 +10,9 @@ export default function LoginForm(props) {
   const [values, setValues] = useState(initialFormValues);
   // ✨ where are my props? Destructure them here
   const { login } = props;
+  if (localStorage.getItem("token")) {
+    return <Navigate to="/articles" />;
+  }
 
   const onChange = (evt) => {
     const { id, value } = evt.target;

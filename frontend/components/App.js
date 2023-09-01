@@ -6,6 +6,7 @@ import Message from "./Message";
 import ArticleForm from "./ArticleForm";
 import Spinner from "./Spinner";
 import axios from "axios";
+import { axiosAuth } from "../axios/index";
 
 const articlesUrl = "http://localhost:9000/api/articles";
 const loginUrl = "http://localhost:9000/api/login";
@@ -76,6 +77,25 @@ export default function App() {
     // If something goes wrong, check the status of the response:
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     // Don't forget to turn off the spinner!
+    setMessage("");
+    setSpinnerOn(true);
+    axiosAuth()
+      .get(articlesUrl)
+      .then((response) => {
+        console.log(response.data);
+        setArticles(response.data.articles);
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          redirectToLogin();
+        } else {
+          setMessage(error.response.data.message);
+        }
+      })
+      .finally(() => {
+        setSpinnerOn(false);
+      });
   };
 
   const postArticle = (article) => {
