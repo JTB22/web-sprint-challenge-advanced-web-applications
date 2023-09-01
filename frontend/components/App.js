@@ -55,7 +55,7 @@ export default function App() {
     axios
       .post(loginUrl, { username, password })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         localStorage.setItem("token", response.data.token);
         setMessage(response.data.message);
         redirectToArticles();
@@ -82,7 +82,7 @@ export default function App() {
     axiosAuth()
       .get(articlesUrl)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setArticles(response.data.articles);
         setMessage(response.data.message);
       })
@@ -108,9 +108,9 @@ export default function App() {
     axiosAuth()
       .post(articlesUrl, article)
       .then((response) => {
-        console.log(response.data);
-        getArticles();
-        setMessage(response.data.message);
+        // console.log(response.data);
+        setArticles([...articles, response.data.article]);
+        setMessage("Well done, Foo. Great Article!");
       })
       .catch((error) => {
         if (error.response.status === 401) {
@@ -129,13 +129,20 @@ export default function App() {
     // You got this!
     setMessage("");
     setSpinnerOn(true);
-    console.log(article_id, article);
     axiosAuth()
       .put(`${articlesUrl}/${article_id}`, article)
       .then((response) => {
-        console.log(response.data);
-        getArticles();
-        setMessage(response.data.message);
+        // console.log(response.data);
+        setArticles(
+          articles.map((art) => {
+            if (art.article_id === article_id) {
+              return response.data.article;
+            } else {
+              return art;
+            }
+          })
+        );
+        setMessage("Nice update, Foo!");
       })
       .catch((error) => {
         if (error.response.status === 401) {
@@ -158,8 +165,12 @@ export default function App() {
       .delete(`${articlesUrl}/${article_id}`)
       .then((response) => {
         console.log(response.data);
-        getArticles();
-        setMessage(response.data.message);
+        setArticles(
+          articles.filter((art) => {
+            return art.article_id !== article_id;
+          })
+        );
+        setMessage(`Article ${article_id} was deleted, Foo!`);
       })
       .catch((error) => {
         if (error.response.status === 401) {
